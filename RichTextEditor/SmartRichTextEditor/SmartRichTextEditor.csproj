@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Platforms>AnyCPU;x86</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="SampleData\Context.docx" />
+    <None Remove="SampleData\New_App_specification.docx" />
+  </ItemGroup>
+
+  <ItemGroup>
+		<PackageReference Include="SmartComponents.LocalEmbeddings" Version="0.1.0-preview10148" />
+		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
+    <PackageReference Include="Telerik.UI.for.WinForms.AllControls" Version="2024.2.514" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="SampleData\Context.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="SampleData\New_App_specification.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+</Project>
