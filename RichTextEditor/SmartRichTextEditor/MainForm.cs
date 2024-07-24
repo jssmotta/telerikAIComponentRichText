@@ -1,5 +1,4 @@
-﻿using SmartComponents.LocalEmbeddings;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using Telerik.WinControls.UI;
@@ -14,6 +13,8 @@ namespace SmartAIComponents
     public partial class MainForm : RadForm
     {
         private Timer timer;
+
+        public string[] Chunks { get; set; }
 
         public MainForm()
         {
@@ -33,17 +34,12 @@ namespace SmartAIComponents
 
             // The document could be stored and updated by other memebers teams of the company
 
-    AllTextContent = CopyTextFromDocx(@"..\..\..\..\SampleData\Context.docx");
+            var allTextContent = CopyTextFromDocx(@"..\..\..\..\SampleData\Context.docx");
 
-    string[] chunks = AllTextContent.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Distinct()
-        .ToArray();
+            Chunks = allTextContent.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Distinct().ToArray();
+        }
 
-    LocalEmbedder embedder = new LocalEmbedder();
-    PageEmbeddings = chunks.AsParallel().Select(x => KeyValuePair.Create(x, embedder.Embed(x)))
-        .ToDictionary(k => k.Key, v => v.Value);
-}
-
-        // Extract text from a .docx file
+        //// Extract text from a .docx file
         public static string CopyTextFromDocx(string file)
         {
             var docxFormatProvider = new DocxFormatProvider();
@@ -52,11 +48,6 @@ namespace SmartAIComponents
             var txtFormatProvider = new TxtFormatProvider();
             return txtFormatProvider.Export(document);
         }
-
-        public Dictionary<string, EmbeddingF32> PageEmbeddings { get; set; }
-
-        public string AllTextContent { get; set; }
-
         private void Timer_Tick(object? sender, EventArgs e)
         {
             timer.Stop();
@@ -87,16 +78,16 @@ namespace SmartAIComponents
             return sb.ToString();
         }
 
-private string AnswerQuestion(string question)
-{
-    // Use all document content:
+        private string AnswerQuestion(string question)
+        {
+            // Use all document content:
 
-    string allContext = string.Join(" ", PageEmbeddings.Keys);
+            string allContext = string.Join(" ", Chunks);
 
-    var answer = CallOpenAIApi("You are a helpful assistant. Use the provided context to answer the user question. Context: " + allContext, question);
-    
-    return answer;
-}
+            var answer = CallOpenAIApi("You are a helpful assistant. Use the provided context to answer the user question. Context: " + allContext, question);
+
+            return answer;
+        }
 
         /*
         CallOpenAIApi - With Azure SDK
